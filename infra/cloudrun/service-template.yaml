@@ -1,0 +1,41 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  annotations:
+    run.googleapis.com/ingress: internal-and-cloud-load-balancing
+    run.googleapis.com/ingress-status: internal-and-cloud-load-balancing
+  labels:
+    classification: sandbox
+    cloud.googleapis.com/location: LOCATION
+    run.googleapis.com/satisfiesPzs: 'true'
+  name: CLOUD_RUN_NAME
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '1'
+        autoscaling.knative.dev/minScale: '1'
+        run.googleapis.com/vpc-access-connector: serverless-conn-ew2
+        run.googleapis.com/vpc-access-egress: all-traffic
+    spec:
+      containerConcurrency: 80
+      containers:
+        image: LOCATION-docker.pkg.dev/PROJECT_ID/ARTIFACT_REGISTRY_PATH@sha256:SHORT_HASH
+        ports:
+          - containerPort: 8080
+            name: http1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+        startupProbe:
+          failureThreshold: 1
+          periodSeconds: 240
+          tcpSocket:
+            port: 8080
+          timeoutSeconds: 240
+      serviceAccountName: GCP_SERVICE_ACCOUNT
+      timeoutSeconds: 300
+  traffic:
+    - latestRevision: true
+      percent: 100

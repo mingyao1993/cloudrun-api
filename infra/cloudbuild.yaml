@@ -1,0 +1,22 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    id: build-dev
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        docker build . \
+        -t $LOCATION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_PATH:latest \
+        -t $LOCATION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_PATH:$_SHORT_HASH
+options:
+  logging: CLOUD_LOGGING_ONLY
+  pool:
+    name: 'projects/$PROJECT_ID/locations/$LOCATION/workerPools/$_WORKER_POOL'
+images:
+  - '$LOCATION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_PATH:latest'
+  - '$LOCATION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_PATH:$_SHORT_HASH'
+substitutions:
+  _WORKER_POOL: unset
+  _ARTIFACT_REGISTRY_PATH: unset
+  _SHORT_HASH: unset
+timeout: 21600s
