@@ -1,20 +1,15 @@
-import base64
-import json
 import logging.config
-import time
 from os import path
-from typing import Optional
 
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
 
 logging.config.fileConfig(
-    path.join(path.dirname(path.abspath(__file__)), 'logging.ini'),
+    path.join(path.dirname(path.abspath(__file__)), 'config/logging.ini'),
     disable_existing_loggers=False
 )
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # API instantiation
 app = FastAPI(title="mloh-sandbox")
@@ -24,4 +19,5 @@ app = FastAPI(title="mloh-sandbox")
 @app.get("/health")
 async def health_check():
     """Health check response"""
-    return {"Hello": "World"}
+    logger.info("health check endpoint")
+    return {"health": "ok"}
