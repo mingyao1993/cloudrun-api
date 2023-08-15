@@ -1,13 +1,19 @@
 # Cloud Run API Service
+
 ## Cloud Run Local Deployment
+
 ### Set GCP Project
+
 ```bash
 PROJECT_ID=<GCP_PROJECT_ID>
 gcloud config set project ${PROJECT_ID}
 ```
 
 ### Build Docker Image via CloudBuild
-The CloudBuild job builds the docker image and push it to Google Artifact Registry (GAR) which is run by Cloud Run Service later on.
+
+The CloudBuild job builds the docker image and push it to Google Artifact Registry (GAR) which is run by Cloud Run
+Service later on.
+
 ```bash
 SHORT_HASH=$(echo -n "$timestamp" | shasum | cut -c 1-8)
 REGION=<REGION>
@@ -21,8 +27,10 @@ _SHORT_HASH=${SHORT_HASH}
 ```
 
 ### Deploy Cloud Run Service with YAML
+
 Rename `/infra/cloudrun/service-template.yaml` to `service.yaml`.
 Replace the variables required for deployments. e.g. PROJECT_ID, LOCATION, etc.
+
 ```bash
 gcloud run services replace infra/cloudrun/service.yaml
 ```
