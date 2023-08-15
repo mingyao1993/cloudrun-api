@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  main-app:
+    build:
+      context: .
+      target: dev
+    image: mloh-sandbox
+    container_name: mloh-sandbox
+    environment:
+      # Dev Setup & Emulator Variables
+      - PYTHONPATH=/home/appuser/src
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./tests:/home/appuser/tests
+      - ./src:/home/appuser/src
