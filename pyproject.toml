@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "cloudrun-api"
+version = "0.1.0"
+description = ""
+authors = ["mloh"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+gunicorn = "^21.2.0"
+uvicorn = "^0.23.2"
+fastapi = "^0.101.1"
+python-json-logger = "^2.0.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+requests = "^2.31.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
