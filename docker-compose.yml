@@ -14,3 +14,28 @@ services:
     volumes:
       - ./tests:/home/appuser/tests
       - ./src:/home/appuser/src
+    depends_on:
+      pubsub:
+        condition: service_healthy
+      datastore:
+        condition: service_started
+
+  pubsub:
+    image: google/cloud-sdk
+    container_name: gcp-pubsub-emulator
+    command: [ "sh", "-c", "gcloud beta emulators pubsub start --project=test-project --host-port=0.0.0.0:8085" ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8085" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    ports:
+      - "8085:8085"
+
+  datastore:
+    image: google/cloud-sdk
+    container_name: datastore_client-emulator
+    command: [ "sh", "-c", "gcloud beta emulators datastore_client start --project=test-project --host-port=0.0.0.0:9000 --consistency=1.0 --no-store-on-disk" ]
+    ports:
+      - "9000:9000"
