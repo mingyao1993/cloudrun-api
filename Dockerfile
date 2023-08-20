@@ -10,7 +10,7 @@ RUN chown -R appuser:appuser ${HOME}
 # Change to the appuser
 USER appuser
 
-# Copy common files
+# Copy cloud files
 COPY --chown=appuser:appuser pyproject.toml poetry.lock ./
 COPY --chown=appuser:appuser src ./src
 

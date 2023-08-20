@@ -1,4 +1,3 @@
-import json
 import logging.config
 import time
 from os import path
@@ -9,7 +8,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.responses import Response
 
-from cloud.datastore import Datastore
+from cloud.datastore import data_store
 from cloud.pubsub import decode_pubsub_data
 from model.pubsub import PubSubRequest
 
@@ -36,10 +35,10 @@ def health_check():
 @app.post("/v1/transfer_funds", response_model=dict)
 def update_datastore(request: PubSubRequest):
     decoded_data = decode_pubsub_data(request.message.data)
-    Datastore().transfer_funds(from_key=decoded_data['from'], to_key=decoded_data['to'],
-                               amount=decoded_data['amount'])
+    data_store.transfer_funds(from_account=decoded_data['from'], to_account=decoded_data['to'],
+                              amount=decoded_data['amount'])
     return JSONResponse(status_code=status.HTTP_200_OK,
-                        content=jsonable_encoder({"message_id": request.message.messageId}))
+                        content=jsonable_encoder({"message": "success"}))
 
 
 @app.exception_handler(RequestValidationError)
@@ -58,23 +57,11 @@ async def api_middleware(request: Request, call_next):
     body = b""
     async for data in response.body_iterator:
         body += data
-    if len(body) != 0:
-        message_body = json.loads(body)
-        try:
-            message_id = message_body["message_id"]
-            status = message_body["status"]
-            detail = message_body["detail"]
-        except KeyError as exc:
-            message_id = None
-            status = "Failed"
-            detail = str(exc)
     process_time_ms = (time.perf_counter() - start_time) * 1000
     logger.info(
         f"Processing Stats (Request:{request.scope['path']}---Time:{process_time_ms:.1f} milliseconds---",
         {"httpStatusCode": response.status_code},
     )
-    logger.info(f"Message ID: {message_id}; status: {status}, response_code: {response.status_code}, detail: {detail}")
-
     # Send back a new Response object. Required because the body was extracted for logging
     return Response(
         content=body, status_code=response.status_code, headers=response.headers

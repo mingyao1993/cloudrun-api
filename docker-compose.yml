@@ -9,6 +9,18 @@ services:
     environment:
       # Dev Setup & Emulator Variables
       - PYTHONPATH=/home/appuser/src
+      # Main App Env Variables
+      - PROJECT_ID=test-project
+      - DATASTORE_NAMESPACE=sandbox
+      # Datastore Emulator Variables
+      - DATASTORE_EMULATOR_HOST=datastore:9000
+      - DATASTORE_EMULATOR_HOST_PATH=datastore:9000/datastore
+      - DATASTORE_HOST=datastore:9000
+      - DATASTORE_DATASET=test-project
+      - DATASTORE_PROJECT_ID=test-project
+      # PubSub Emulator Variables
+      - PUBSUB_PROJECT_ID=test-project
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8085
     ports:
       - "8003:8000"
     volumes:
@@ -18,12 +30,14 @@ services:
       pubsub:
         condition: service_healthy
       datastore:
-        condition: service_started
+        condition: service_healthy
 
   pubsub:
     image: google/cloud-sdk
-    container_name: gcp-pubsub-emulator
-    command: [ "sh", "-c", "gcloud beta emulators pubsub start --project=test-project --host-port=0.0.0.0:8085" ]
+    container_name: pubsub-emulator
+    environment:
+      - GCP_PROJECT_ID=test-project
+    command: [ "sh", "-c", "gcloud beta emulators pubsub start --project=$$GCP_PROJECT_ID --host-port=0.0.0.0:8085" ]
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8085" ]
       interval: 5s
@@ -35,7 +49,15 @@ services:
 
   datastore:
     image: google/cloud-sdk
-    container_name: datastore_client-emulator
-    command: [ "sh", "-c", "gcloud beta emulators datastore_client start --project=test-project --host-port=0.0.0.0:9000 --consistency=1.0 --no-store-on-disk" ]
+    container_name: datastore-emulator
+    environment:
+      - GCP_PROJECT_ID=test-project
+    command: [ "sh", "-c", "gcloud beta emulators datastore start --project=$$GCP_PROJECT_ID --host-port=0.0.0.0:9000 --use-firestore-in-datastore-mode --no-store-on-disk" ]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     ports:
       - "9000:9000"
