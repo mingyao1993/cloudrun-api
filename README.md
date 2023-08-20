@@ -5,9 +5,9 @@ Welcome to this repository that offers a demonstration to test, build
 
 The main features of this repository include:
 
-- Deployment of a single service housing two distinct API endpoints.
+- Local CLI deployment of a single service housing two distinct API endpoints via GCP CloudBuild.
 - The first endpoint functions as a fundamental health check.
-- The second endpoint facilitates an asynchronous, straightforward fund transfer process. 
+- The second endpoint facilitates an asynchronous, fund transfer transaction process. 
 This process seamlessly integrates the PubSub messaging service and the Datastore NoSQL document database for efficient communication and data storage.
 
 ## Prerequisite
