@@ -38,7 +38,7 @@ def update_datastore(request: PubSubRequest):
     data_store.transfer_funds(from_account=decoded_data['from'], to_account=decoded_data['to'],
                               amount=decoded_data['amount'])
     return JSONResponse(status_code=status.HTTP_200_OK,
-                        content=jsonable_encoder({"message": "success"}))
+                        content=jsonable_encoder({'message_id': request.message.messageId}))
 
 
 @app.exception_handler(RequestValidationError)
