@@ -1,5 +1,27 @@
 # Cloud Run API Service
 
+## Prerequisite
+- Python
+- Docker
+- GCP (deployment)
+
+## Local Testing with Docker
+
+Run docker-compose command to build and spin up main app, pubsub emulator and datastore emulator containers.
+```bash
+docker-compose -f docker-compose.yml up -d
+```
+
+Run unit test on the docker container
+```bash
+docker exec mloh-sandbox /bin/sh -c "poetry run pytest /home/appuser/tests/unit_tests/ -disable-warnings -vv -s
+```
+
+integration test on the docker container
+```bash
+docker exec mloh-sandbox /bin/sh -c "poetry run pytest /home/appuser/tests/unit_tests/ -disable-warnings -vv -s
+```
+
 ## Cloud Run Local Deployment
 
 ### Set GCP Project
@@ -11,7 +33,7 @@ gcloud config set project ${PROJECT_ID}
 
 ### Build Docker Image via CloudBuild
 
-The CloudBuild job builds the docker image and push it to Google Artifact Registry (GAR) which is run by Cloud Run
+The CloudBuild job tests and builds the docker image and push it to Google Artifact Registry (GAR) which is run by Cloud Run
 Service later on.
 
 ```bash
