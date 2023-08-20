@@ -1,5 +1,15 @@
 # Cloud Run API Service
 
+Welcome to this repository that offers a demonstration to test, build
+, and local deployment of a basic Cloud Run API service to Google Cloud Platform environment.
+
+The main features of this repository include:
+
+- Deployment of a single service housing two distinct API endpoints.
+- The first endpoint functions as a fundamental health check.
+- The second endpoint facilitates an asynchronous, straightforward fund transfer process. 
+This process seamlessly integrates the PubSub messaging service and the Datastore NoSQL document database for efficient communication and data storage.
+
 ## Prerequisite
 - Python
 - Docker
