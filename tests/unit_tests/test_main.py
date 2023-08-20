@@ -17,7 +17,7 @@ def test_health(api_client):
 
 @patch.object(target=Datastore, attribute='transfer_funds', return_value=None)
 def test_transfer_funds_success(mock_transfer_funds, api_client):
-    transfer_funds_request = {"from": "q1w2e3", "to": "r4t5y6", "amount": 50}
+    transfer_funds_request = {"from": "12345", "to": "54321", "amount": 50}
     request_body = {
         "message": {
             "data": base64.b64encode(json.dumps(transfer_funds_request).encode('utf-8')).decode('utf-8'),
