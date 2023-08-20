@@ -27,10 +27,8 @@ services:
       - ./tests:/home/appuser/tests
       - ./src:/home/appuser/src
     depends_on:
-      pubsub:
-        condition: service_healthy
-      datastore:
-        condition: service_healthy
+      - pubsub
+      - datastore
 
   pubsub:
     image: google/cloud-sdk

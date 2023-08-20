@@ -1,5 +1,27 @@
 steps:
   - name: gcr.io/cloud-builders/docker
+    id: build
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        docker build . --target dev -t mloh-sandbox
+        docker-compose -f docker-compose.yml up -d
+  - name: gcr.io/cloud-builders/docker
+    id: unit-tests
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        docker exec mloh-sandbox /bin/sh -c "poetry run pytest /home/appuser/tests/unit_tests/"
+  - name: gcr.io/cloud-builders/docker
+    id: integration-tests
+    entrypoint: /bin/bash
+    args:
+      - '-c'
+      - |
+        docker exec mloh-sandbox /bin/sh -c "poetry run pytest /home/appuser/tests/integration_tests/"
+  - name: gcr.io/cloud-builders/docker
     id: build-dev
     entrypoint: /bin/bash
     args:
